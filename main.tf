@@ -4,6 +4,6 @@ provider "aws" {
 resource "aws_s3_bucket" "sandbucket81335" {
   bucket = "sandbucket81335"
 }
-resource "aws_s3_bucket" "sandbucket81334" {
-  bucket = "sandbucket81334"
+resource "aws_s3_bucket" "sandbucket81336" {
+  bucket = "sandbucket81336"
 }
