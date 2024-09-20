@@ -5,5 +5,5 @@ resource "aws_s3_bucket" "sandbucket81335" {
   bucket = "sandbucketashai"
 }
 resource "aws_s3_bucket" "sandbucketashai1" {
-  bucket = "sandbucket81336"
+  bucket = "sandbucketashai1"
 }
