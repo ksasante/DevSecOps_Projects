@@ -50,7 +50,7 @@ jobs:
 
       - name: Pull Docker Image
 
-        run: docker pull ksasante/dockerhub:wobbly
+        run: docker pull ksasante/wobbly:v1
 
 
 
@@ -90,7 +90,7 @@ jobs:
 
         scanners: 'vuln'
 
-        image-ref: ksasante/dockerhub:wobbly
+        image-ref: ksasante/wobbly:v1
 
         scan-ref: '.'
 
