@@ -9,7 +9,6 @@ jobs:
   deploy-and-scan:
     name: Terraform apply to AWS
     runs-on: ubuntu-latest
-    # If you later put your .tf files in a subfolder, set it here (e.g., DevSecOps_Projects)
     defaults:
       run:
         working-directory: .
