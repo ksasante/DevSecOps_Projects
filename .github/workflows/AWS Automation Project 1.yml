@@ -1,73 +1,58 @@
 name: AWS Automation Project 1
 
-
-
 on:
-
   push:
-
-    branches:
-
-      - main
-
-
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-
   deploy-and-scan:
-
-    name: Deploy WordPress on EC2
-
+    name: Terraform apply to AWS
     runs-on: ubuntu-latest
+    # If you later put your .tf files in a subfolder, set it here (e.g., DevSecOps_Projects)
+    defaults:
+      run:
+        working-directory: .
 
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
 
+    concurrency:
+      group: terraform-deploy-${{ github.ref }}
+      cancel-in-progress: false
 
     steps:
-
       - name: Checkout repository
-
-        uses: actions/checkout@v2
-
-
-
-      # Terraform setup
+        uses: actions/checkout@v4
 
       - name: Set up Terraform
-
-        uses: hashicorp/setup-terraform@v1
-
+        uses: hashicorp/setup-terraform@v3
         with:
-
-          terraform_version: 1.0.0
-
-
-
-      # AWS credentials setup
+          terraform_version: 1.9.5
 
       - name: Configure AWS credentials
-
-        uses: aws-actions/configure-aws-credentials@v2
-
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
           aws-region: eu-west-2
 
- 
+      - name: Terraform init
+        run: terraform init -input=false
 
-      # Initialize Terraform
+      - name: Terraform validate
+        run: terraform validate
 
-      - name: Initialize Terraform
+      - name: Terraform plan
+        run: terraform plan -out=tfplan -input=false -lock-timeout=5m
 
-        run: terraform init
+      - name: Upload plan artifact (for debugging)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
 
-
-
-      # Deploy Terraform
-
-      - name: Deploy Terraform
-
-        run: terraform apply -auto-approve
+      - name: Terraform apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -input=false -auto-approve tfplan
